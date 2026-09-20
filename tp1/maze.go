@@ -53,7 +53,7 @@ func buscarsalidaYllegada(laberinto [][]rune) (salida, llegada coordenada) {
 func esParedYEstaAdentro(laberinto [][]rune, c coordenada) bool {
 	return c.fila >= 0 && c.fila < len(laberinto) &&
 		c.columna >= 0 && c.columna < len(laberinto[0]) &&
-		laberinto[c.fila][c.columna] == PARED
+		laberinto[c.fila][c.columna] != PARED
 }
 
 func invertirVector(vector []string) {
