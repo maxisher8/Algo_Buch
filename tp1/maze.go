@@ -14,6 +14,7 @@ const (
 	SALIDA = 'S'
 	LLEGADA = 'E'
 	ERROR = "ERROR"
+	CORDENADA_INVALIDA = coordenada{fila: -1, columna: -1}
 )
 
 var DIRRECCIONES = []direccion{
@@ -22,6 +23,8 @@ var DIRRECCIONES = []direccion{
 	{fila: 0, columna: -1, apuntado: "IZQUIERDA"},
 	{fila: 0, columna: 1, apuntado: "DERECHA"},
 }
+
+//var CORDENADA_INVALIDA = coordenada{fila: -1, columna: -1}
 
 type coordenada struct {
 	fila, columna int
@@ -82,13 +85,15 @@ func resolver(laberinto [][]rune) bool {
 	for i := 0; i < len(laberinto); i++ {
 		origenes[i] = make([]origen, len(laberinto[i]))
 	}
-	salida, llegada := coordenada{-1,-1}, coordenada{-1,-1}
+	salida, llegada := CORDENADA_INVALIDA, CORDENADA_INVALIDA
+	//Guarrdar la salida y llegada cuando leo el laberinto, para no tener que recorrerlo de nuevo
 	salida, llegada = buscarsalidaYllegada(laberinto)
-	if salida.fila == -1 || llegada.fila == -1 {
+	if salida == CORDENADA_INVALIDA || llegada == CORDENADA_INVALIDA {
 		return false
 	}
 	celdas := cola.CrearColaEnlazada[coordenada]()
 	celdas.Encolar(salida)
+	//no modificar el laberinto
 	laberinto[salida.fila][salida.columna] = PARED
 	for !celdas.EstaVacia() {
 		actual := celdas.Desencolar()
@@ -108,8 +113,12 @@ func resolver(laberinto [][]rune) bool {
 	return false
 }
 
+//Buscar donde se puede utilizar TDAs para abstraer el programa
+//El main solo debe llamar funciones, no debe tener logica adentro
+
 func main() {
 	lectura := bufio.NewScanner(os.Stdin)
+	//modularizar
 	for lectura.Scan() {
 		partes := strings.Split(lectura.Text(), " ")
 		filas, _ := strconv.Atoi(partes[0])
